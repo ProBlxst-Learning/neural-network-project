@@ -1,0 +1,7 @@
+We should check out:
+
+For visualizations
+https://www.wandb.com/articles/intro-to-keras-with-weights-biases
+
+To save a nn
+https://www.tensorflow.org/tutorials/keras/save_and_load

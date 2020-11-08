@@ -63,7 +63,7 @@ class NN():
 
 
     # used to train network with given training data
-    def train(self, training_data):
+    def train(self, training_x, training_y, test_x, test_y):
         return -1
     
 

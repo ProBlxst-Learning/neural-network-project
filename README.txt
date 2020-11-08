@@ -26,3 +26,9 @@ You are now using the viritual environment
 4.5 Perform 3. Set-up
 
 To see active packages use "pip list"
+
+For more info see:
+https://www.youtube.com/watch?v=APOPm01BVrk&ab_channel=CoreySchafer
+
+For info on Python version see:
+https://www.youtube.com/watch?v=OdIHeg4jj2c&ab_channel=CoreySchafer
