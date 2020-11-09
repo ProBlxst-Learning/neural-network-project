@@ -7,7 +7,7 @@ https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network
 ################### Imports ###################
 
 import keras
-import matplotlib
+from matplotlib import pyplot
 from sklearn.model_selection import KFold
 
 ################### Global variables ###################
@@ -29,7 +29,7 @@ class NN():
         for neurons in hidden_layers:
             self.__layers.append(neurons)
         self.__layers.append(output_size)
-        print(self.__layers)
+        print(self.__layers) if VERBOSE else None
 
         # define neural network
         self.__nn = keras.models.Sequential()
@@ -55,20 +55,38 @@ class NN():
 
     ################### Methods ###################
 
+    """
+    calculate bit capacity according to Friedland (2018)
+    assuming every dense layer contains biases and weights between every neuron in the next layer
+
+    rule 1: The output of a single perceptron yields maximally one bit of information.
+    rule 2: The capacity of a single perceptron is the number of its parameters (weights and bias) in bits.
+    rule 3: For perceptrons in series (e.g., in subsequent layers), the capacity of a subsequent layer cannot be larger 
+            than the output of the previous layer.
+
+    """
     # should return the bit capacity of the nn
-    # calculate bit capacity according to Friedland (2018)
-    # assuming every dense layer contains biases and weights between every neuron in the next layer
     def bit_capacity(self):
-        return -1
 
-        # set initail capasity to 0
-        self.__capacity = -1
-
-        # initialize the bit capacity for all layers to zero
-        capacities = []
+        # seek to find the capacity for all layers, staring at the first hidden layer, and summing
+        capacities = list()
 
         # the first layer gives a capacity of all weights pluss all biases
-        #for layer in self.__layers:
+        # only rule 1 applies
+        capacity = self.__layers[0]*self.__layers[1] # weights
+        capacity += self.__layers[1] # biases
+        capacities.append(capacity)
+        print('bit capacity layer %s: %s' % (1, capacity)) if VERBOSE else None
+
+        # for all but the first layer the capacity contribution is min(rule 2, output of previous layer) this is rule 3
+        for i in range (2, len(self.__layers)):
+            print(i)
+            capacity = self.__layers[i-1]*self.__layers[i] # weights
+            capacity += self.__layers[i] # biases
+            capacities.append(min(capacity, self.__layers[i-1]))
+            print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
+        
+        return sum(capacities)
 
 
     # used to train network with given training data
@@ -124,22 +142,22 @@ class NN():
 
         for i in range(len(history)):
             # plot loss
-            matplotlib.pyplot.subplot(2, 1, 1)
-            matplotlib.pyplot.title('Cross Entropy Loss')
-            matplotlib.pyplot.plot(history[i].history['loss'], color='blue', label='train')
-            matplotlib.pyplot.plot(history[i].history['val_loss'], color='orange', label='test')
+            pyplot.subplot(2, 1, 1)
+            pyplot.title('Cross Entropy Loss')
+            pyplot.plot(history[i].history['loss'], color='blue', label='train')
+            pyplot.plot(history[i].history['val_loss'], color='orange', label='test')
             # plot accuracy
-            matplotlib.pyplot.subplot(2, 1, 2)
-            matplotlib.pyplot.title('Classification Accuracy')
-            matplotlib.pyplot.plot(history[i].history['accuracy'], color='blue', label='train')
-            matplotlib.pyplot.plot(history[i].history['val_accuracy'], color='orange', label='test')
-        matplotlib.pyplot.show()
+            pyplot.subplot(2, 1, 2)
+            pyplot.title('Classification Accuracy')
+            pyplot.plot(history[i].history['accuracy'], color='blue', label='train')
+            pyplot.plot(history[i].history['val_accuracy'], color='orange', label='test')
+        pyplot.show()
 
         # print summary
         #print('Accuracy: mean=%.3f std=%.3f, n=%d' % (mean(scores)*100, std(scores)*100, len(scores)))
         # box and whisker plots of results
-        matplotlib.pyplot.boxplot(scores)
-        matplotlib.pyplot.show()
+        pyplot.boxplot(scores)
+        pyplot.show()
         
 
 ################### Main ###################
