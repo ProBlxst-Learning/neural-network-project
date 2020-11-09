@@ -46,16 +46,16 @@ def main():
     train_x, train_y = format_data(train_x, train_y)
 
     # create model
-    model = dense.NN(28*28, 10, 500, 250)
+    model = dense.NN(28*28, 10, 16)
 
     # bit capacity of model
     print(model.bit_capacity())
 
     # fit model
-    #model.evaluate(train_x,train_y)
+    model.evaluate(train_x,train_y)
 
     # visualise training
-    #model.visualise_training()
+    model.visualise_training()
 
 
 # function used to understand the dataset (not to be used for other than development and testing)
