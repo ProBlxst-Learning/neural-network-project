@@ -34,14 +34,16 @@ class NN():
         # define neural network
         self.__nn = keras.models.Sequential()
 
-            # the input layer should be as large as the defined input size
+        # the input layer should be as large as the defined input size
         self.__nn.add(keras.layers.core.Dense(int(input_size), input_dim=int(input_size), activation='relu'))
 
             # make one layer per hidden layer with the specified number of neurons
-        [self.__nn.add(keras.layers.core.Dense(neurons)) for neurons in hidden_layers],
+        [self.__nn.add(keras.layers.core.Dense(neurons, activation='relu')) for neurons in hidden_layers],
 
-            # the output layer shoud be as large as the defined output size
-        self.__nn.add(keras.layers.core.Dense(output_size))
+        # the output layer shoud be as large as the defined output size
+        self.__nn.add(keras.layers.core.Dense(output_size, activation='softmax'))
+
+        # compile model
         self.__nn.compile(optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9) , loss='categorical_crossentropy', metrics=['accuracy'])
 
         # history of training and accuracy
