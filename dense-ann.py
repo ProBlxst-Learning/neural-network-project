@@ -100,7 +100,10 @@ class NN():
 
     
     # should visualise the training
-    def visualise_training(self, history=self.__histories, scores=self.__scores):
+    def visualise_training(self, history=None, scores=None):
+
+        history = history if history else self.__histories
+        scores = scores if scores else self.__scores
 
         for i in range(len(history)):
             # plot loss
