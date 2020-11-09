@@ -93,7 +93,7 @@ class NN():
 
             # train the model and record the proces
             print('fit initiated') if VERBOSE else None
-            instance = self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(test_x, test_y), verbose=1)
+            instance = self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(test_x, test_y), verbose=VERBOSE)
             print('fit finished') if VERBOSE else None
             history.append(instance)
 
