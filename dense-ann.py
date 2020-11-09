@@ -1,10 +1,14 @@
 """
 Implementation of a dense artifical neural network with keras (tensorflow)
+Influenced by:
+https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-from-scratch-for-mnist-handwritten-digit-classification/
 """
 
 ################### Imports ###################
 
 import keras
+import sklearn
+import matplotlib
 
 ################### Global variables ###################
 
@@ -56,15 +60,44 @@ class NN():
 
         # the first layer gives a capacity of all weights pluss all biases
         #for layer in self.__layers:
-            
-
-
-
 
 
     # used to train network with given training data
-    def train(self, training_x, training_y, test_x, test_y):
+    def evaluate(self, data_x, data_y, n_folds=5):
+        
+        # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
+        history = []
+        scores = []
+        fit = 1
+
+        # the traing set is splitt into folds; 
+        # groupings of data to be used as validation data once while the other folds acts as training data
+        kfold = sklearn.model_selection.KFold(n_splits=n_folds, shuffle=True, random_state=1)
+
+        # all combinations of the folds should be used for training and validation
+        for train_ix, test_ix in kfold.split(data_x):
+
+            # create actual data for training, based on rows chosen by kfold
+            train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
+
+            # train the model and record the proces
+            history.append(self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(test_x, test_y), verbose=0))
+
+            # for every fit call, print the accuracy and recort it
+            acc = self.__nn.evaluate(test_x, test_y)
+            print('>%s: %.3f' % (fit, acc))
+            scores.append(acc)
+            fit += 1
+
+        # the model is now trained and the diagnistics should be returned
+        return history, scores
+
+    
+    # should visualise the training
+    def visualise_training(self):
         return -1
+        
+
     
 
 ################### Main ###################
