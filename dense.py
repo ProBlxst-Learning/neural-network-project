@@ -7,8 +7,8 @@ https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network
 ################### Imports ###################
 
 import keras
-import sklearn
 import matplotlib
+from sklearn.model_selection import KFold
 
 ################### Global variables ###################
 
@@ -24,28 +24,32 @@ class NN():
     # initial class set up
     def __init__(self, input_size, output_size, *hidden_layers):
 
-        # save arguments in the object
-        self.__layers = [input_size, hidden_layers, output_size]
+        # save arguments in the object in the order; input, hidden, output
+        self.__layers = [input_size]
+        for neurons in hidden_layers:
+            self.__layers.append(neurons)
+        self.__layers.append(output_size)
+        print(self.__layers)
 
         # define neural network
-        self.__nn = keras.models.Sequential([
+        self.__nn = keras.models.Sequential()
 
             # the input layer should be as large as the defined input size
-            keras.layers.core.Dense(int(input_size), input_shape=(1,), activation='relu'),
+        self.__nn.add(keras.layers.core.Dense(int(input_size), input_dim=int(input_size), activation='relu'))
 
             # make one layer per hidden layer with the specified number of neurons
-            [keras.layers.core.Dense(neurons) for neurons in hidden_layers],
+        [self.__nn.add(keras.layers.core.Dense(neurons)) for neurons in hidden_layers],
 
             # the output layer shoud be as large as the defined output size
-            keras.layers.core.Dense(output_size)
-        ])
-
-        self.__nn.compile()
+        self.__nn.add(keras.layers.core.Dense(output_size))
+        self.__nn.compile(optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9) , loss='categorical_crossentropy', metrics=['accuracy'])
 
         # history of training and accuracy
         self.__histories = list()
         self.__scores = list()
-        
+
+        print('Model made') if VERBOSE else None
+
 
     ################### Methods ###################
 
@@ -75,7 +79,11 @@ class NN():
 
         # the traing set is splitt into folds; 
         # groupings of data to be used as validation data once while the other folds acts as training data
-        kfold = sklearn.model_selection.KFold(n_splits=n_folds, shuffle=True, random_state=1)
+        print('kfold initiated') if VERBOSE else None
+        kfold = KFold(n_splits=n_folds, shuffle=True, random_state=1)
+        print('kfold finished') if VERBOSE else None
+
+        print('Training initiated') if VERBOSE else None
 
         # all combinations of the folds should be used for training and validation
         for train_ix, test_ix in kfold.split(data_x):
@@ -84,10 +92,16 @@ class NN():
             train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
 
             # train the model and record the proces
-            history.append(self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(test_x, test_y), verbose=0))
+            print('fit initiated') if VERBOSE else None
+            instance = self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(test_x, test_y), verbose=1)
+            print('fit finished') if VERBOSE else None
+            history.append(instance)
 
             # for every fit call, print the accuracy and recort it
-            acc = self.__nn.evaluate(test_x, test_y)
+            print('evaluate initiated') if VERBOSE else None
+            loss, acc = self.__nn.evaluate(test_x, test_y, verbose=1)
+            print('evaluate finished') if VERBOSE else None
+            print(acc)
             print('>%s: %.3f' % (fit, acc))
             score.append(acc)
             fit += 1
