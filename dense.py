@@ -45,6 +45,7 @@ class NN():
         # history of training and accuracy
         self.__histories = list()
         self.__scores = list()
+        
 
     ################### Methods ###################
 

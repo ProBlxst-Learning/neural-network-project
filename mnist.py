@@ -7,6 +7,7 @@ https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network
 ################### Imports ###################
 
 import keras
+import dense
 
 ################### Global variables ###################
 
@@ -40,6 +41,8 @@ def format_data(input, output):
 ################### Main ###################
 
 if __name__ == "__main__":
+
+    # import dataset
     train_x, train_y, test_x, test_y = load_dataset()
-    print('X:%s, Y:%s' % (train_x[0], train_y[0]))
-    print('X:%s, Y:%s' % (1, keras.utils.to_categorical(train_y)))
+    
+    # create model
