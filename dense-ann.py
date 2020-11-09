@@ -13,8 +13,6 @@ import matplotlib
 ################### Global variables ###################
 
 VERBOSE = True
-INPUT_SIZE = 1000
-OUTPUT_SIZE = 10
 
 ################### Objects ###################
 
@@ -24,7 +22,7 @@ OUTPUT_SIZE = 10
 class NN():
 
     # initial class set up
-    def __init__(self, input_size=INPUT_SIZE, output_size=OUTPUT_SIZE, *hidden_layers):
+    def __init__(self, input_size, output_size, *hidden_layers):
 
         # save arguments in the object
         self.__layers = [input_size, hidden_layers, output_size]
@@ -43,6 +41,10 @@ class NN():
         ])
 
         self.__nn.compile()
+
+        # history of training and accuracy
+        self.__histories = list()
+        self.__scores = list()
 
     ################### Methods ###################
 
@@ -67,7 +69,7 @@ class NN():
         
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
-        scores = []
+        score = []
         fit = 1
 
         # the traing set is splitt into folds; 
@@ -86,19 +88,39 @@ class NN():
             # for every fit call, print the accuracy and recort it
             acc = self.__nn.evaluate(test_x, test_y)
             print('>%s: %.3f' % (fit, acc))
-            scores.append(acc)
+            score.append(acc)
             fit += 1
 
+        # the training needs to be added to the history of the model
+        self.__histories.append(history)
+        self.__scores.append(score)
+
         # the model is now trained and the diagnistics should be returned
-        return history, scores
+        return history, score
 
     
     # should visualise the training
-    def visualise_training(self):
-        return -1
-        
+    def visualise_training(self, history=self.__histories, scores=self.__scores):
 
-    
+        for i in range(len(history)):
+            # plot loss
+            matplotlib.pyplot.subplot(2, 1, 1)
+            matplotlib.pyplot.title('Cross Entropy Loss')
+            matplotlib.pyplot.plot(history[i].history['loss'], color='blue', label='train')
+            matplotlib.pyplot.plot(history[i].history['val_loss'], color='orange', label='test')
+            # plot accuracy
+            matplotlib.pyplot.subplot(2, 1, 2)
+            matplotlib.pyplot.title('Classification Accuracy')
+            matplotlib.pyplot.plot(history[i].history['accuracy'], color='blue', label='train')
+            matplotlib.pyplot.plot(history[i].history['val_accuracy'], color='orange', label='test')
+        matplotlib.pyplot.show()
+
+        # print summary
+        #print('Accuracy: mean=%.3f std=%.3f, n=%d' % (mean(scores)*100, std(scores)*100, len(scores)))
+        # box and whisker plots of results
+        matplotlib.pyplot.boxplot(scores)
+        matplotlib.pyplot.show()
+        
 
 ################### Main ###################
 
