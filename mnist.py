@@ -46,7 +46,7 @@ def main():
     train_x, train_y = format_data(train_x, train_y)
 
     # create model
-    model = dense.NN(28*28, 10, 500, 250)
+    model = dense.NN(28*28, 10, 200)
 
     # fit model
     model.evaluate(train_x,train_y)
