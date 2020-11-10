@@ -80,7 +80,21 @@ class NN():
         capacities = list()
 
         # the first layer gives a capacity of all weights pluss all biases
-        # for layer in self.__layers:
+        # only rule 1 applies
+        capacity = self.__layers[0]*self.__layers[1] # weights
+        capacity += self.__layers[1] # biases
+        capacities.append(capacity)
+        print('bit capacity layer %s: %s' % (1, capacity)) if VERBOSE else None
+
+        # for all but the first layer the capacity contribution is min(rule 2, output of previous layer) this is rule 3
+        for i in range (2, len(self.__layers)):
+            print(i)
+            capacity = self.__layers[i-1]*self.__layers[i] # weights
+            capacity += self.__layers[i] # biases
+            capacities.append(min(capacity, self.__layers[i-1]))
+            print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
+
+        return sum(capacities)
 
     # used to train network with given training data
     def evaluate(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
@@ -97,10 +111,6 @@ class NN():
         print('kfold finished') if VERBOSE else None
 
         print('Training initiated') if VERBOSE else None
-
-        for train_ix, test_ix in kfold.split(data_x):
-            print(train_ix, test_ix)
-            pass
 
         # all combinations of the folds should be used for training and validation
         for train_ix, test_ix in kfold.split(data_x):
