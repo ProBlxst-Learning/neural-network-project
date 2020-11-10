@@ -90,7 +90,7 @@ class NN():
 
 
     # used to train network with given training data
-    def evaluate(self, data_x, data_y, n_folds=5):
+    def evaluate(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
         
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
@@ -119,7 +119,7 @@ class NN():
 
             # for every fit call, print the accuracy and recort it
             print('evaluate initiated') if VERBOSE else None
-            loss, acc = self.__nn.evaluate(test_x, test_y, verbose=1)
+            loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=1)
             print('evaluate finished') if VERBOSE else None
             print(acc)
             print('>%s: %.3f' % (fit, acc))

@@ -1,7 +1,5 @@
 """
 Implementation of a dense artifical neural network with keras (tensorflow)
-Inspired by:
-https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-from-scratch-for-mnist-handwritten-digit-classification/
 """
 
 ################### Imports ###################
@@ -19,7 +17,7 @@ VERBOSE = True
 # this function loads the dataset from tensorflow
 def load_dataset():
 
-    (train_x, train_y), (test_x, test_y) = keras.datasets.mnist.load_data()
+    (train_x, train_y), (test_x, test_y) = keras.datasets.cifar10.load_data()
 
     return train_x, train_y, test_x, test_y
 
@@ -32,7 +30,7 @@ def format_data(data_x, data_y):
 
     # flatten pictures to one dimention
     dim = len(data_x)
-    input_flatt = input_norm.reshape((dim,28*28))
+    input_flatt = input_norm.reshape((dim,32*32*3))
 
     # output data is categorised
     output_cat = keras.utils.to_categorical(data_y)
@@ -48,10 +46,10 @@ def main():
     test_x, test_y = format_data(test_x,test_y)
 
     # create model
-    model = dense.NN(28*28, 10)
+    model = dense.NN(32*32*3, 10)
 
     # bit capacity of model
-    print(model.bit_capacity())
+    print('the model has a bit capacity of: ',model.bit_capacity())
 
     # fit model
     model.evaluate(train_x, train_y, test_x, test_y)
