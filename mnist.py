@@ -17,6 +17,8 @@ VERBOSE = True
 ################### Functions ###################
 
 # this function loads the dataset from tensorflow
+
+
 def load_dataset():
 
     (train_x, train_y), (test_x, test_y) = keras.datasets.mnist.load_data()
@@ -24,6 +26,8 @@ def load_dataset():
     return train_x, train_y, test_x, test_y
 
 # the input data needs to be a float32 between 0 and 1 and the output data needs to be a categorical
+
+
 def format_data(data_x, data_y):
 
     # convert input data to float32 and normalise
@@ -40,8 +44,10 @@ def format_data(data_x, data_y):
     return input_flatt, output_cat
 
 # main function for using the nn to train on mnist
+
+
 def main():
-    
+
     # import and format data
     train_x, train_y, test_x, test_y = load_dataset()
     train_x, train_y = format_data(train_x, train_y)
@@ -70,6 +76,7 @@ def test():
     print('\nX:%s, Y:%s' % (x[0], y[0]))
 
 ################### Main ###################
+
 
 if __name__ == "__main__":
     main()
