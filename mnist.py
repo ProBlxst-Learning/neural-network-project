@@ -69,14 +69,14 @@ def main():
         model.append(capacity)
 
         # fit model
-        results = model[0].train(train_x, train_y, test_x, test_y)
+        results = model[0].train(train_x, train_y, test_x, test_y, epochs=25)
         # appends the test accuracy and the number of the model to the training results
         result_model = [results[2], 'bit capacity: ' + str(model[1])]
         training_results.append(result_model)
         n += 1
 
     # visualise training
-    model1.compare_training(measures=training_results, title='Training accuracy per epoc of the MNIST data set', type_measure='test accuracy')
+    model1.compare_training(measures=training_results, title='Training accuracy per epoch of the MNIST data set', type_measure='test accuracy')
 
 
 # function used to understand the dataset (not to be used for other than development and testing)

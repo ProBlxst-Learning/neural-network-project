@@ -95,7 +95,7 @@ class NN():
         return sum(capacities)
 
     # used to train network with given training data
-    def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
+    def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5, epochs=20):
         
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
@@ -116,7 +116,7 @@ class NN():
             train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
 
             # train the model and record the proces
-            for i in range(0,3):
+            for i in range(0,epochs):
 
                 # train the neural network with training data and the split of training data temporarily used as validation data
                 instance = self.__nn.fit(train_x, train_y, epochs=1, batch_size=32, validation_data=(test_x, test_y), verbose=VERBOSE)
