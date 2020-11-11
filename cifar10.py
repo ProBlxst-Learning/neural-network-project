@@ -36,6 +36,7 @@ def format_data(data_x, data_y):
     output_cat = keras.utils.to_categorical(data_y)
 
     return input_flatt, output_cat
+
 # main function for using the nn to train on mnist
 def main():
 
@@ -46,8 +47,8 @@ def main():
 
     # create model
     model1 = dense.NN(32*32*3, 10, 13)
-    model2 = dense.NN(32*32*3, 10, 16)
-    model3 = dense.NN(32*32*3, 10, 24)
+    model2 = dense.NN(32*32*3, 10, 15)
+    model3 = dense.NN(32*32*3, 10, 18)
     models = [[model1], [model2], [model3]]
 
     # list to collect training results
@@ -65,7 +66,7 @@ def main():
         model.append(capacity)
 
         # fit model
-        results = model[0].train(train_x, train_y, test_x, test_y, epochs=50)
+        results = model[0].train(train_x, train_y, test_x, test_y, epochs=5)
         # appends the test accuracy and the number of the model to the training results
         result_model = [results[2], 'bit capacity: ' + str(model[1])]
         training_results.append(result_model)
@@ -74,6 +75,10 @@ def main():
     # visualise training
     model1.compare_training(measures=training_results, title='Training accuracy per epoch of the CIFAR-10 data set', type_measure='test accuracy')
 
+# need to test what bit capacity models have
+def cap():
+    model1 = dense.NN(32*32*3, 10, 18)
+    model1.bit_capacity()
 
 # function used to understand the dataset (not to be used for other than development and testing)
 def test():
