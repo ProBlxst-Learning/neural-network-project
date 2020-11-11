@@ -28,8 +28,9 @@ class NN():
 
         # save arguments in the object in the order; input, hidden, output
         self.__layers = [input_size]
-        for neurons in hidden_layers:
-            self.__layers.append(neurons)
+        if hidden_layers:
+            for neurons in hidden_layers:
+                self.__layers.append(neurons)
         self.__layers.append(output_size)
         print(self.__layers) if VERBOSE else None
 
@@ -37,20 +38,17 @@ class NN():
         self.__nn = keras.models.Sequential()
 
         # the input layer should be as large as the defined input size
-        self.__nn.add(keras.layers.core.Dense(int(input_size),
-                                              input_dim=int(input_size), activation='relu'))
+        self.__nn.add(keras.layers.core.Dense(int(input_size), input_dim=int(input_size), activation='relu'))
 
         # make one layer per hidden layer with the specified number of neurons
         [self.__nn.add(keras.layers.core.Dense(neurons, activation='relu'))
          for neurons in hidden_layers],
 
         # the output layer shoud be as large as the defined output size
-        self.__nn.add(keras.layers.core.Dense(
-            output_size, activation='softmax'))
+        self.__nn.add(keras.layers.core.Dense(output_size, activation='softmax'))
 
         # compile model
-        self.__nn.compile(optimizer=keras.optimizers.SGD(
-            lr=0.01, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+        self.__nn.compile(optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
         # history of training and accuracy
         self.__histories = list()
@@ -88,29 +86,28 @@ class NN():
 
         # for all but the first layer the capacity contribution is min(rule 2, output of previous layer) this is rule 3
         for i in range (2, len(self.__layers)):
-            print(i)
             capacity = self.__layers[i-1]*self.__layers[i] # weights
             capacity += self.__layers[i] # biases
             capacities.append(min(capacity, self.__layers[i-1]))
             print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
 
+        print('bit capacity of neural network: ', sum(capacities))
         return sum(capacities)
 
     # used to train network with given training data
-    def evaluate(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
+    def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
         
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
         score = []
-        fit = 1
+        train_acc = []
+        train_loss = []
+        test_acc = []
+        test_loss = []
 
         # the traing set is splitt into folds;
         # groupings of data to be used as validation data once while the other folds acts as training data
-        print('kfold initiated') if VERBOSE else None
         kfold = KFold(n_splits=n_folds, shuffle=True, random_state=1)
-        print('kfold finished') if VERBOSE else None
-
-        print('Training initiated') if VERBOSE else None
 
         # all combinations of the folds should be used for training and validation
         for train_ix, test_ix in kfold.split(data_x):
@@ -119,30 +116,32 @@ class NN():
             train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
 
             # train the model and record the proces
-            print('fit initiated') if VERBOSE else None
-            instance = self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(
-                test_x, test_y), verbose=VERBOSE)
-            print('fit finished') if VERBOSE else None
-            history.append(instance)
+            for i in range(0,3):
 
-            # for every fit call, print the accuracy and recort it
-            print('evaluate initiated') if VERBOSE else None
-            loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=1)
-            print('evaluate finished') if VERBOSE else None
-            print(acc)
-            print('>%s: %.3f' % (fit, acc))
-            score.append(acc)
-            fit += 1
+                # train the neural network with training data and the split of training data temporarily used as validation data
+                instance = self.__nn.fit(train_x, train_y, epochs=1, batch_size=32, validation_data=(test_x, test_y), verbose=VERBOSE)
+                # save metrics of accuracy and loss with the training data
+                train_acc.append(instance.history['accuracy'])
+                train_loss.append(instance.history['loss'])
 
-        # the training needs to be added to the history of the model
-        self.__histories.append(history)
-        self.__scores.append(score)
+                # evaluate the neural network after training with the actual test data
+                loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=VERBOSE)
+                # save metrics or accuracy and loss for the evaluaton with actual test data
+                test_acc.append(acc)
+                test_loss.append(loss)
+
+                # saves the all raw data from the fit function and acc from eval
+                history.append(instance)
+                score.append(acc)
+
+            # saves the full training history of the model to the object variables
+            self.__histories.append(instance)
+            self.__scores.append(acc)
 
         # the model is now trained and the diagnistics should be returned
-        return history, score
+        return train_acc, train_loss, test_acc, test_loss
 
     # should visualise the training
-
     def visualise_training(self, history=None, scores=None):
 
         history = history if history else self.__histories
@@ -166,7 +165,19 @@ class NN():
         # box and whisker plots of results
         pyplot.boxplot(scores)
         pyplot.show()
+
+    # takes touples, of a measure and its title, of data from training and displays it in the same plot
+    def compare_training(self, measures, type_measure='accuracy', title='Training measure'):
         
+        pyplot.title(title)
+        for measure in measures:
+            pyplot.plot(measure[0], label=measure[1])
+        pyplot.legend()
+        pyplot.xlabel('Epoc')
+        #pyplot.ylabel('')
+        pyplot.show()
+
+
 
 ################### Main ###################
 

@@ -52,7 +52,7 @@ def main():
     print('the model has a bit capacity of: ',model.bit_capacity())
 
     # fit model
-    model.evaluate(train_x, train_y, test_x, test_y)
+    model.train(train_x, train_y, test_x, test_y)
 
     # visualise training
     model.visualise_training()

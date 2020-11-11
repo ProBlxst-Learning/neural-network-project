@@ -5,3 +5,7 @@ https://www.wandb.com/articles/intro-to-keras-with-weights-biases
 
 To save a nn
 https://www.tensorflow.org/tutorials/keras/save_and_load
+
+Visualise the actually created neural network
+https://towardsdatascience.com/visualizing-artificial-neural-networks-anns-with-just-one-line-of-code-b4233607209e
+
