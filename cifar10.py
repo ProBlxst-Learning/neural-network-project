@@ -36,26 +36,43 @@ def format_data(data_x, data_y):
     output_cat = keras.utils.to_categorical(data_y)
 
     return input_flatt, output_cat
-
 # main function for using the nn to train on mnist
 def main():
-    
+
     # import and format data
     train_x, train_y, test_x, test_y = load_dataset()
     train_x, train_y = format_data(train_x, train_y)
     test_x, test_y = format_data(test_x,test_y)
 
     # create model
-    model = dense.NN(32*32*3, 10)
+    model1 = dense.NN(32*32*3, 10, 13)
+    model2 = dense.NN(32*32*3, 10, 16)
+    model3 = dense.NN(32*32*3, 10, 24)
+    models = [[model1], [model2], [model3]]
 
-    # bit capacity of model
-    print('the model has a bit capacity of: ',model.bit_capacity())
+    # list to collect training results
+    training_results = list()
+    
+    # variable initaited to keep track of what model is currently under used
+    n = 1
 
-    # fit model
-    model.train(train_x, train_y, test_x, test_y)
+    # every model is trained and the data collected in the same way
+    for model in models:
+
+        # bit capacity of model
+        capacity = model[0].bit_capacity()
+        print('model', n, ' has a bit capacity of: ',capacity)
+        model.append(capacity)
+
+        # fit model
+        results = model[0].train(train_x, train_y, test_x, test_y)
+        # appends the test accuracy and the number of the model to the training results
+        result_model = [results[2], 'bit capacity: ' + str(model[1])]
+        training_results.append(result_model)
+        n += 1
 
     # visualise training
-    model.visualise_training()
+    model1.compare_training(measures=training_results, title='Training accuracy per epoc of the CIFAR-10 data set', type_measure='test accuracy')
 
 
 # function used to understand the dataset (not to be used for other than development and testing)

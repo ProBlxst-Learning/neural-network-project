@@ -52,7 +52,7 @@ def main():
     model1 = dense.NN(28*28, 10, 13)
     model2 = dense.NN(28*28, 10, 16)
     model3 = dense.NN(28*28, 10, 24)
-    models = [model1, model2, model3]
+    models = [[model1], [model2], [model3]]
 
     # list to collect training results
     training_results = list()
@@ -64,12 +64,14 @@ def main():
     for model in models:
 
         # bit capacity of model
-        print('model', n, ' has a bit capacity of: ',model.bit_capacity())
+        capacity = model[0].bit_capacity()
+        print('model', n, ' has a bit capacity of: ',capacity)
+        model.append(capacity)
 
         # fit model
-        results = model.train(train_x, train_y, test_x, test_y)
+        results = model[0].train(train_x, train_y, test_x, test_y)
         # appends the test accuracy and the number of the model to the training results
-        result_model = [results[2], str(n)]
+        result_model = [results[2], 'bit capacity: ' + str(model[1])]
         training_results.append(result_model)
         n += 1
 
