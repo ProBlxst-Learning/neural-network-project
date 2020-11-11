@@ -1,24 +1,10 @@
-"""
-Implementation of a dense artifical neural network with keras (tensorflow)
-Influenced by:
-https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-from-scratch-for-mnist-handwritten-digit-classification/
-"""
 
-################### Imports ###################
 
 import keras
 from matplotlib import pyplot
-from sklearn.model_selection import KFold
 
-################### Global variables ###################
 
 VERBOSE = True
-
-################### Objects ###################
-
-# input_size decides the dimention of the input layer
-# output_size decides the dimention of the output layer
-# every argument following denotes the size of the hidden layers starting right after the input layer
 
 
 class NN():
@@ -52,6 +38,8 @@ class NN():
         self.__nn.compile(optimizer=keras.optimizers.SGD(
             lr=0.01, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
+        print(self.__nn.summary())
+
         # history of training and accuracy
         self.__histories = list()
         self.__scores = list()
@@ -71,11 +59,6 @@ class NN():
 
     """
     # should return the bit capacity of the nn
-<<<<<<< Updated upstream
-    # calculate bit capacity according to Friedland (2018)
-    # assuming every dense layer contains biases and weights between every neuron in the next layer
-=======
->>>>>>> Stashed changes
 
     def bit_capacity(self):
 
@@ -95,56 +78,39 @@ class NN():
             capacity = self.__layers[i-1]*self.__layers[i]  # weights
             capacity += self.__layers[i]  # biases
             capacities.append(min(capacity, self.__layers[i-1]))
-<<<<<<< Updated upstream
-            print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
-=======
             print('bit capacity layer %s: %s' %
                   (i, capacities[i-1])) if VERBOSE else None
->>>>>>> Stashed changes
 
         return sum(capacities)
 
     # used to train network with given training data
-    def evaluate(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
-        
-        # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
-        history = []
-        score = []
-        fit = 1
 
-        # the traing set is splitt into folds;
-        # groupings of data to be used as validation data once while the other folds acts as training data
-        print('kfold initiated') if VERBOSE else None
-        kfold = KFold(n_splits=n_folds, shuffle=True, random_state=1)
-        print('kfold finished') if VERBOSE else None
+    def evaluate(self, train_x, train_y, test_x, test_y, epochs=5):
+
+        # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
+        fit = 1
 
         print('Training initiated') if VERBOSE else None
 
-        # all combinations of the folds should be used for training and validation
-        for train_ix, test_ix in kfold.split(data_x):
+        # train the model and record the proces
+        print('fit initiated') if VERBOSE else None
+        history = self.__nn.fit(train_x, train_y, epochs=epochs, batch_size=32, validation_data=(
+            test_x, test_y), verbose=VERBOSE)
+        print('fit finished') if VERBOSE else None
 
-            # create actual data for training, based on rows chosen by kfold
-            train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
-
-            # train the model and record the proces
-            print('fit initiated') if VERBOSE else None
-            instance = self.__nn.fit(train_x, train_y, epochs=10, batch_size=32, validation_data=(
-                test_x, test_y), verbose=VERBOSE)
-            print('fit finished') if VERBOSE else None
-            history.append(instance)
-
-            # for every fit call, print the accuracy and recort it
-            print('evaluate initiated') if VERBOSE else None
-            loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=1)
-            print('evaluate finished') if VERBOSE else None
-            print(acc)
-            print('>%s: %.3f' % (fit, acc))
-            score.append(acc)
-            fit += 1
+        # for every fit call, print the accuracy and recort it
+        print('evaluate initiated') if VERBOSE else None
+        loss, acc = self.__nn.evaluate(test_x, test_y, verbose=1)
+        print('evaluate finished') if VERBOSE else None
+        print(acc)
+        print('>%s: %.3f' % (fit, acc))
+        print('Loss', loss)
+        fit += 1
+        score = acc
 
         # the training needs to be added to the history of the model
-        self.__histories.append(history)
-        self.__scores.append(score)
+        self.__histories = history
+        self.__scores = score
 
         # the model is now trained and the diagnistics should be returned
         return history, score
@@ -156,35 +122,86 @@ class NN():
         history = history if history else self.__histories
         scores = scores if scores else self.__scores
 
-        for i in range(len(history)):
-            # plot loss
-            pyplot.subplot(2, 1, 1)
-            pyplot.title('Cross Entropy Loss')
-            pyplot.plot(history[i].history['loss'],
-                        color='blue', label='train')
-            pyplot.plot(history[i].history['val_loss'],
-                        color='orange', label='test')
-            # plot accuracy
-            pyplot.subplot(2, 1, 2)
-            pyplot.title('Classification Accuracy')
-            pyplot.plot(history[i].history['accuracy'],
-                        color='blue', label='train')
-            pyplot.plot(history[i].history['val_accuracy'],
-                        color='orange', label='test')
+        print(history)
+        print(history.history)
+
+        # plot loss
+        pyplot.subplot(2, 1, 1)
+        pyplot.title('Cross Entropy Loss')
+        pyplot.plot(history.history['loss'],
+                    color='blue', label='train')
+        pyplot.plot(history.history['val_loss'],
+                    color='orange', label='test')
+        # plot accuracy
+        pyplot.subplot(2, 1, 2)
+        pyplot.title('Classification Accuracy')
+        pyplot.plot(history.history['accuracy'],
+                    color='blue', label='train')
+        pyplot.plot(history.history['val_accuracy'],
+                    color='orange', label='test')
         pyplot.show()
 
         # print summary
         #print('Accuracy: mean=%.3f std=%.3f, n=%d' % (mean(scores)*100, std(scores)*100, len(scores)))
         # box and whisker plots of results
-        pyplot.boxplot(scores)
-        pyplot.show()
-<<<<<<< Updated upstream
-        
-=======
+        # pyplot.boxplot(scores)
+        # pyplot.show()
 
->>>>>>> Stashed changes
 
-################### Main ###################
+def load_dataset():
 
-if __name__ == "__main__":
-    pass
+    (train_x, train_y), (test_x, test_y) = keras.datasets.mnist.load_data()
+
+    return train_x, train_y, test_x, test_y
+
+# the input data needs to be a float32 between 0 and 1 and the output data needs to be a categorical
+
+
+def format_data(data_x, data_y):
+
+    # convert input data to float32 and normalise
+    data_x_float = data_x.astype('float32')
+    input_norm = data_x_float/255.0
+
+    # flatten pictures to one dimention
+    input_flatt = input_norm.reshape((len(data_x), 28*28))
+
+    # output data is categorised
+    output_cat = keras.utils.to_categorical(data_y)
+
+    return input_flatt, output_cat
+
+# main function for using the nn to train on mnist
+
+
+def main():
+
+    # import and format data
+    train_x, train_y, test_x, test_y = load_dataset()
+    train_x, train_y = format_data(train_x, train_y)
+    test_x, test_y = format_data(test_x, test_y)
+
+    # create model
+    model = NN(28*28, 10, 16)
+
+    # bit capacity of model
+    print(model.bit_capacity())
+
+    # fit model
+    model.evaluate(train_x, train_y, test_x, test_y)
+
+    # visualise training
+    model.visualise_training()
+
+
+# function used to understand the dataset (not to be used for other than development and testing)
+def test():
+    train_x, train_y, test_x, test_y = load_dataset()
+    print('X:%s, Y:%s' % (train_x[0], train_y[0]))
+    print('X:%s, Y:%s' % (1, keras.utils.to_categorical(train_y)[0]))
+
+    x, y = format_data(train_x, train_y)
+    print('\nX:%s, Y:%s' % (x[0], y[0]))
+
+
+main()
