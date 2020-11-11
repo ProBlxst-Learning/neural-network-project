@@ -71,11 +71,6 @@ class NN():
 
     """
     # should return the bit capacity of the nn
-<<<<<<< Updated upstream
-    # calculate bit capacity according to Friedland (2018)
-    # assuming every dense layer contains biases and weights between every neuron in the next layer
-=======
->>>>>>> Stashed changes
 
     def bit_capacity(self):
 
@@ -95,18 +90,15 @@ class NN():
             capacity = self.__layers[i-1]*self.__layers[i]  # weights
             capacity += self.__layers[i]  # biases
             capacities.append(min(capacity, self.__layers[i-1]))
-<<<<<<< Updated upstream
-            print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
-=======
             print('bit capacity layer %s: %s' %
                   (i, capacities[i-1])) if VERBOSE else None
->>>>>>> Stashed changes
 
         return sum(capacities)
 
     # used to train network with given training data
-    def evaluate(self, data_x, data_y, test_data_x, test_data_y, n_folds=5):
-        
+
+    def evaluate(self, data_x, data_y, n_folds=5):
+
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
         score = []
@@ -119,6 +111,10 @@ class NN():
         print('kfold finished') if VERBOSE else None
 
         print('Training initiated') if VERBOSE else None
+
+        for train_ix, test_ix in kfold.split(data_x):
+            print(train_ix, test_ix)
+            pass
 
         # all combinations of the folds should be used for training and validation
         for train_ix, test_ix in kfold.split(data_x):
@@ -135,7 +131,7 @@ class NN():
 
             # for every fit call, print the accuracy and recort it
             print('evaluate initiated') if VERBOSE else None
-            loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=1)
+            loss, acc = self.__nn.evaluate(test_x, test_y, verbose=1)
             print('evaluate finished') if VERBOSE else None
             print(acc)
             print('>%s: %.3f' % (fit, acc))
@@ -178,11 +174,7 @@ class NN():
         # box and whisker plots of results
         pyplot.boxplot(scores)
         pyplot.show()
-<<<<<<< Updated upstream
-        
-=======
 
->>>>>>> Stashed changes
 
 ################### Main ###################
 

@@ -39,23 +39,42 @@ def format_data(data_x, data_y):
 
 # main function for using the nn to train on mnist
 def main():
-    
+
     # import and format data
     train_x, train_y, test_x, test_y = load_dataset()
     train_x, train_y = format_data(train_x, train_y)
     test_x, test_y = format_data(test_x,test_y)
 
     # create model
-    model = dense.NN(28*28, 10)
+    model1 = dense.NN(28*28, 10, 13)
+    model2 = dense.NN(28*28, 10, 16)
+    model3 = dense.NN(28*28, 10, 24)
+    models = [[model1], [model2], [model3]]
 
-    # bit capacity of model
-    print(model.bit_capacity())
+    # list to collect training results
+    training_results = list()
+    
+    # variable initaited to keep track of what model is currently under used
+    n = 1
 
-    # fit model
-    model.evaluate(train_x, train_y, test_x, test_y)
+    # every model is trained and the data collected in the same way
+    for model in models:
+
+        # bit capacity of model
+        capacity = model[0].bit_capacity()
+        print('model', n, ' has a bit capacity of: ',capacity)
+        model.append(capacity)
+
+        # fit model
+        results = model[0].train(train_x, train_y, test_x, test_y, epochs=25)
+        # appends the test accuracy and the number of the model to the training results
+        result_model = [results[2], 'bit capacity: ' + str(model[1])]
+        training_results.append(result_model)
+        n += 1
 
     # visualise training
-    model.visualise_training()
+    model1.compare_training(measures=training_results, title='Training accuracy per epoch of the MNIST fashion data set', type_measure='test accuracy')
+
 
 
 ################### Main ###################
