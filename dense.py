@@ -77,8 +77,8 @@ class NN():
 
         # the first layer gives a capacity of all weights pluss all biases
         # only rule 1 applies
-        capacity = self.__layers[0]*self.__layers[1] # weights
-        capacity += self.__layers[1] # biases
+        capacity = self.__layers[0]*self.__layers[1]  # weights
+        capacity += self.__layers[1]  # biases
         capacities.append(capacity)
         print('bit capacity layer %s: %s' % (1, capacity)) if VERBOSE else None
 
@@ -88,7 +88,12 @@ class NN():
             capacity = self.__layers[i-1]*self.__layers[i]  # weights
             capacity += self.__layers[i]  # biases
             capacities.append(min(capacity, self.__layers[i-1]))
+<<<<<<< Updated upstream
             print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
+=======
+            print('bit capacity layer %s: %s' %
+                  (i, capacities[i-1])) if VERBOSE else None
+>>>>>>> Stashed changes
 
         return sum(capacities)
 
@@ -150,13 +155,17 @@ class NN():
             # plot loss
             pyplot.subplot(2, 1, 1)
             pyplot.title('Cross Entropy Loss')
-            pyplot.plot(history[i].history['loss'], color='blue', label='train')
-            pyplot.plot(history[i].history['val_loss'], color='orange', label='test')
+            pyplot.plot(history[i].history['loss'],
+                        color='blue', label='train')
+            pyplot.plot(history[i].history['val_loss'],
+                        color='orange', label='test')
             # plot accuracy
             pyplot.subplot(2, 1, 2)
             pyplot.title('Classification Accuracy')
-            pyplot.plot(history[i].history['accuracy'], color='blue', label='train')
-            pyplot.plot(history[i].history['val_accuracy'], color='orange', label='test')
+            pyplot.plot(history[i].history['accuracy'],
+                        color='blue', label='train')
+            pyplot.plot(history[i].history['val_accuracy'],
+                        color='orange', label='test')
         pyplot.show()
 
         # print summary
@@ -165,6 +174,7 @@ class NN():
         pyplot.boxplot(scores)
         pyplot.show()
 
+<<<<<<< Updated upstream
     # takes a nested list, of a measure and its title, of data from training and displays it in the same plot
     def compare_training(self, measures, type_measure='accuracy', title='Training measure'):
         
@@ -175,6 +185,8 @@ class NN():
         pyplot.xlabel('Epoc')
         #pyplot.ylabel('')
         pyplot.show()
+=======
+>>>>>>> Stashed changes
 
 ################### Main ###################
 
