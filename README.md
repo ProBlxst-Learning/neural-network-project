@@ -40,17 +40,15 @@ Install the requirements for the project and migrate the database
 
 ## File structure
 
-* model - the neural network models, both for initialization and results
-  * `dense.py` - creates a class, NN, which initialises aas a sequential keras model with dense layers. Performs the training in the function name train. Includes functions for calculating bit capacity and visualize the training. 
-
-The next three python files are related to each of the three dataset: MNIST, Fashion MNIST and CIFAR-10. Structured in three different files to decide which dataset to run.
-Each contains two functions, load and format the data, as well as main function. The neural net for each datasets uses initiaalization and functions from `dense.py` in the main method.
+* model - the neural network models, where dense initializes the model and the three other trains on datasets
+  * `dense.py`
   * `mnist.py`
   * `fashion_mnist.py`
   * `cifar10.py`
-
-* utils - contains one way, the capacity requirement method
-   * `capacity_req.py` - runs through all three datasets and stores the results in a table. Prints a pretty output when run with main-function. 
+* utils - contains the method for calculating capacity requirements
+   * `capacity_req.py`
+* img - stores images
+  * ... .png
 
 ## Running the files
 
@@ -75,11 +73,9 @@ The neural network uses keras, so the process can be followed from the terminal.
 
 The method can be found in `utils/capacity_req.py`. It loads all three datasets and iterates through all in order to find the data we need. The result is shown below, and is the same as can be found in the report in section 5.1.
 
-<img src=https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png width="250" />
+<img src=https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png width="350" />
 
-![Output from capacity estimator](/img/capacity_req_output.png)
-
-The next sections are related to the neural networks. The three python-files `mnist.py`, `fashion_mnist.py` and `cifar10.py` is structured in the same way, but loads different datasets in the beginning. Unless other specified, 
+The next sections are related to the neural networks. The three python-files `mnist.py`, `fashion_mnist.py` and `cifar10.py` is structured in the same way, but loads different datasets in the beginning. Unless other specified, the descriptions beneath are related to these files. 
 
 ### Data
 The data is loaded at the beginning of the file. The function `load_dataset()` in the file loads the data in variables for later use, splitting the data in training and test at initialization. It uses keras to load the data, found in `keras.datasets` supplied with the dataset and the keras-function `load_data()`. An overview of these dataset is found in section 3.1 in the report.
