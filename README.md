@@ -1,5 +1,5 @@
 # Neural-network-project
-Repository containing code for the group project in the course TDT4173 - Machine Learning, Fall 2020. The project works in two parts: It implements a heuristic for determining the size of a neural network from a given dataset. Subsequently, neural networks are created and trained on the respective daatasets.
+Repository containing code for the group project in the course TDT4173 - Machine Learning, Fall 2020. This README focuses on how our results can be reproduced from others. It also described links between the project paper and the codes found in this repository.
 
 ## Getting started
 
@@ -17,7 +17,7 @@ Run `pip --version` to see if you have pip installed. pip is installed with pyth
 You will later need to use a virtual environment. 
 Run `pip install virtualenv` to make sure you have this installed. 
 
-## Installing
+### Installing
 
 Use `git clone` to clone the repo.
 
@@ -51,26 +51,46 @@ Each contains two functions, load and format the data, as well as main function.
 
 * utils - contains one way, the capacity requirement method
    * `capacity_req.py` - runs through all three datasets and stores the results in a table. Prints a pretty output when run with main-function. 
-   
-   
+
+## Running the files
+
+Make sure you have virtualenv activated and installed everything in requirements.txt. If not, follow description in "installing"
+
+### Capacity estimator
+From root write `cd utils`
+Run the capacity estimator with `python3 capacity_req.py`
+It loads and iterates through three datasets, so it may take some minutes. Print statements makes sure the process can be followed through terminal. At then end, the output is printed to terminal to be used for creation of neural networks.
+
+### Training and running neural networks
+From root write `cd models`
+* Train and evaluate MNIST: `python3 mnist.py`
+* Train and evaluate Fashion MNIST: `python3 fashion_mnist.py`
+* Train and evaluate CIFAR-10: `python3 cifar10.py`
+
+The neural network uses keras, so the process can be followed from the terminal.
+
 ## Connection with report
 
-The three next sections is the same for the different python-files each representing a dataset, found in model.
-### Data
-The data is loaded at the beginning of the python-file for the different datasets. The function `load_dataset()`uses keras to load the data. With keras installed, this data will be able to load locally.
-
-### Preprocessing
-Preprocessing is the next thing after data is loaded. This happens in the function `format_data(data_x, data_y)`.
-
-### Neural network initialization
-Three networks of different sizes are initialized using the class NN from `dense.py`.
-
-### Training and evaluation
-
-Training and evaluation is done in the function `train()` in `dense.py`. The result is accuracy on the test dataset, shown in section 5.3 in the report. Note: Need to run each dataset independently. 
-
-### Capacity method
+### Method for capacity requirements
 
 The method can be found in `utils/capacity_req.py`. It loads all three datasets and iterates through all in order to find the data we need. The result is shown below, and is the same as can be found in the report in section 5.1.
 
-![Output from capacity estimator](https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png =200x)
+<img src=https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png width="250" />
+
+![Output from capacity estimator](/img/capacity_req_output.png)
+
+The next sections are related to the neural networks. The three python-files `mnist.py`, `fashion_mnist.py` and `cifar10.py` is structured in the same way, but loads different datasets in the beginning. Unless other specified, 
+
+### Data
+The data is loaded at the beginning of the file. The function `load_dataset()` in the file loads the data in variables for later use, splitting the data in training and test at initialization. It uses keras to load the data, found in `keras.datasets` supplied with the dataset and the keras-function `load_data()`. An overview of these dataset is found in section 3.1 in the report.
+
+### Preprocessing
+Preprocessing is the next thing after data is loaded. This happens in the function `format_data(data_x, data_y)`. MNIST and Fashion MNIST reshapes the input data in 28x28 - dimensions, while CIFAR10 use 32x32x3. This pre-processing is further specified in section 3.2 in the report.
+
+### Neural network initialization
+Three networks of different sizes are initialized using the class NN from `dense.py`. It specifices input data neurons and output neurons as required arguments, while the hidden layers are not required. This shows how we can have one neural net with no hidden layers while the next two with one hidden layer. The layer structure and related bit capacity of this is shown in section 5.2 in the report.
+
+### Training and evaluation
+
+Training and evaluation is done in the function `train` in `dense.py`. The result stores the accuracy on the test dataset. The test accuracy from each of the different neural networks sizes are plotted on the same graph with the function `compare_training`, also found in `dense.py`. These graphs is shown in section 5.3 in the report.
+
