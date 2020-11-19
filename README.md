@@ -1,38 +1,52 @@
-# models
-Models to be used in TDT4173
+# Neural-network-project
+Repository containing code from TDT4173 - Machine Learning, final project
 
 
-We have chosen to use venv for the viritual environment.
+## Getting started
 
-1. Set-up
-1.1 Make shure you are using Python 3.8.6
-1.2 In the terminal: Navigate to the project directory models
-1.3 Use the command: "python -m venv venv"
-1.4 Use the command: "venv\Scripts\activate.bat"
-1.5 Use the command: "pip install -r requirements.txt"
-You should now have the right packages in your viritual environment
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-2. Activation
-2.1 Make shure you are using Python 3.8.6
-2.2 In the terminal: Navigate to the project directory models
-2.3 Use the command: "venv\Scripts\activate.bat"
-You are now using the viritual environment
+### Prerequisites
 
-3. Exit
-3.1 Use the command: "deactivate"
+You must make sure you have python and pip installed on your computer.
+
+Run `python3 --version` in your terminal to see if you have python installed.
+If not, you can go to [python.org](https://www.python.org/downloads/) to install the latest version of python.
+
+Run `pip --version` to see if you have pip installed. pip is installed with python.
+
+You will later need to use a virtual environment. 
+Run `pip install virtualenv` to make sure you have this installed. 
+
+## Installing
+
+First we got to create a virtual environment, where we use python 3.8.6.
+
+Python version needs to be >3.6.0 to get all installments in the right way. 
+
+`virtualenv -p python3.8 venv`
+
+Activate the virtualenv
+
+Mac users:
+`source venv/bin/activate`
+
+Windows users:
+`venv\Scripts\activate`
+
+Install the requirements for the project and migrate the database
+
+`pip install -r requirements.txt`
 
 
-4. Requirements (if the requirements file is not there and you have the right environment present)
-4.1 In terminal: Navigate to the right environment
-4.2 Use the command: "pip freeze"
-4.3 Make a new file: "requirements.txt"
-4.4 Copy packages from pip freeze into the requirements.txt
-4.5 Perform 3. Set-up
+## File structure
 
-To see active packages use "pip list"
+* model
+  * ´dense.py´ - creates a class, NN, which initialises aas a sequential keras model with dense layers. Performs the training in the function name train. Includes functions for calculating bit capacity and visualize the training. 
+The next three functions are related to each dataset. The main difference is which dataset is loaded. Initialization of the neural net for each datasets imports from dense.
+  * ´mnist.py´
+  * ´fashion_mnist.py´
+  * ´cifar10.py´
 
-For more info see:
-https://www.youtube.com/watch?v=APOPm01BVrk&ab_channel=CoreySchafer
-
-For info on Python version see:
-https://www.youtube.com/watch?v=OdIHeg4jj2c&ab_channel=CoreySchafer
+* utils - contains one way, the capacity requirement method
+   * `capacity_req.py` - runs through all three datasets and store the results in a table. Includes a nice print, shown below
