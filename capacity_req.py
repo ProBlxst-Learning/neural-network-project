@@ -1,27 +1,19 @@
 
-
-import random
 import math
+import numpy as np
+import tensorflow as tf
+
+from tqdm import tqdm
 
 
-# Function we can use to create a distributed random list to test two classes
-def create_distributed_random_list():
-    data, labels = [], []
+def upload_and_return_set(_type):
 
-    for i in range(50):
-        labels.append(random.randint(0, 1))
-        class_0 = random.uniform(0, 0.75)
-        class_1 = random.uniform(0.25, 1)
-        if labels[i] == 0:
-            data.append(class_0)
-        else:
-            data.append(class_1)
-    return data, labels
+    dataset = getattr(tf.keras.datasets, _type)
 
+    (x_train, y_train), (x_test, y_test) = dataset.load_data()
 
-# Creating a random list of 0 and 1
-def create_random_list():
-    return [random.randint(0, 1) for i in range(50)]
+    # Only training data is needed for heuristic
+    return x_train, y_train
 
 
 def max_cap_req(data, labels, _type):
@@ -38,15 +30,14 @@ def max_cap_req(data, labels, _type):
     # length of the dataset and number of dimensions in each vector
     length = len(data)
     d = len(data[0])**2
-    if _type == 'cifar':
+    # different dimensions for cifar
+    if _type == 'cifar10':
         d = 32*32*3
-    if _type == 'randomized':
-        d = 28
     # initilization of table with the same length as the data and zero's before loop
     table = [[0, 0] for _ in range(length)]
 
     # Table will loop through the data and summarize each dimension in the vector
-    if _type == 'cifar':
+    if _type == 'cifar10':
         for i in range(length):
             mapsum = 0
             for j in range(len(data[i])):
@@ -67,16 +58,57 @@ def max_cap_req(data, labels, _type):
             _class = sorted_table[i][1]
             thresholds += 1
 
-    print("Total amount of threshold: " + str(thresholds))
-
     # Calculation of maximum capacity requirement and expected capacity requirement
     _max_cap_req = thresholds * d + thresholds + 1
     _exp_cap_req = math.log2(thresholds + 1) * d
 
-    print("Max: " + str(_max_cap_req) + " bits")
-    print("Exp: " + str(round(_exp_cap_req, 3)) + " bits")
+    return thresholds, _max_cap_req, _exp_cap_req
 
 
-data, labels = create_distributed_random_list()
+def pretty_output(table, datasets):
+    """
+    Takes in a 2d-array with the goal of printing the results with a pretty output
+    """
+    print("_"*50)
+    print("OVERVIEW OF RESULTS FROM CAPACITY ESTIMATOR".center(50))
 
-max_cap_req(data, labels, 'randomized')
+    for i in range(len(table)):
+        print("_"*50)
+        print(f"Output from {datasets[i]}: ".center(50))
+        print("_"*50)
+        for j in range(len(table[0])):
+            if j == 0:
+                print("Thresholds " + "|".rjust(21) +
+                      str(table[i][j]).rjust(5))
+            elif j == 1:
+                print("Maximum capacity requirement " +
+                      "|".rjust(3) + str(table[i][j]).rjust(8))
+            else:
+                print("Expected capacity requirement " + "|".rjust(2) +
+                      str(round(table[i][j], 3)).rjust(7))
+
+    print("_"*50)
+    print("METHOD COMPLETED".center(50))
+    print("_"*50)
+
+
+def main():
+    datasets = ["mnist", "fashion_mnist", "cifar10"]
+
+    table = []
+    for set in datasets:
+        print("Beginning dataset: ", set)
+        data, labels = upload_and_return_set(set)
+        print("Data loaded ... beginning capacity estimator")
+
+        thresholds, _max_cap_req, _exp_cap_req = max_cap_req(data, labels, set)
+        print("Method done. Results: ")
+        print(thresholds, _max_cap_req, _exp_cap_req)
+        table.append([thresholds, _max_cap_req, _exp_cap_req])
+        print("Results appended to table: \n", table)
+
+    pretty_output(table, datasets)
+
+
+if __name__ == '__main__':
+    main()
