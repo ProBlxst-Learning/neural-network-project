@@ -41,12 +41,33 @@ Install the requirements for the project and migrate the database
 
 ## File structure
 
-* model
-  * ´dense.py´ - creates a class, NN, which initialises aas a sequential keras model with dense layers. Performs the training in the function name train. Includes functions for calculating bit capacity and visualize the training. 
-The next three functions are related to each dataset. The main difference is which dataset is loaded. Initialization of the neural net for each datasets imports from dense.
-  * ´mnist.py´
-  * ´fashion_mnist.py´
-  * ´cifar10.py´
+* model - the neural network models, both for initialization and results
+  * `dense.py` - creates a class, NN, which initialises aas a sequential keras model with dense layers. Performs the training in the function name train. Includes functions for calculating bit capacity and visualize the training. 
+
+The next three python files are related to each of the three dataset: MNIST, Fashion MNIST and CIFAR-10. Structured in three different files to decide which dataset to run.
+Each contains two functions, load and format the data, as well as main function. The neural net for each datasets uses initiaalization and functions from `dense.py` in the main method.
+  * `mnist.py`
+  * `fashion_mnist.py`
+  * `cifar10.py`
 
 * utils - contains one way, the capacity requirement method
-   * `capacity_req.py` - runs through all three datasets and store the results in a table. Includes a nice print, shown below
+   * `capacity_req.py` - runs through all three datasets and stores the results in a table. Prints a pretty output when run with main-function. 
+   
+   
+## Connection with report
+
+### Data
+
+### Preprocessing
+
+
+### Neural network initialization
+
+
+### Capacity method and results
+
+![Output from capacity estimator](https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png)
+
+### Results
+
+
