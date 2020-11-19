@@ -1,9 +1,6 @@
 
 import math
-import numpy as np
 import tensorflow as tf
-
-from tqdm import tqdm
 
 
 def upload_and_return_set(_type):
@@ -105,7 +102,6 @@ def main():
         print("Method done. Results: ")
         print(thresholds, _max_cap_req, _exp_cap_req)
         table.append([thresholds, _max_cap_req, _exp_cap_req])
-        print("Results appended to table: \n", table)
 
     pretty_output(table, datasets)
 

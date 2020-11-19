@@ -37,10 +37,12 @@ class NN():
         self.__nn = keras.models.Sequential()
 
         # the input layer should be as large as the defined input size
-        self.__nn.add(keras.layers.core.Dense(int(input_size), input_dim=int(input_size), activation='relu'))
+        self.__nn.add(keras.layers.core.Dense(int(input_size),
+                                              input_dim=int(input_size), activation='relu'))
 
         # make one layer per hidden layer with the specified number of neurons
-        [self.__nn.add(keras.layers.core.Dense(neurons, activation='relu')) for neurons in hidden_layers],
+        [self.__nn.add(keras.layers.core.Dense(neurons, activation='relu'))
+         for neurons in hidden_layers],
 
         # the output layer shoud be as large as the defined output size
         self.__nn.add(keras.layers.core.Dense(
@@ -77,8 +79,8 @@ class NN():
 
         # the first layer gives a capacity of all weights pluss all biases
         # only rule 1 applies
-        capacity = self.__layers[0]*self.__layers[1] # weights
-        capacity += self.__layers[1] # biases
+        capacity = self.__layers[0]*self.__layers[1]  # weights
+        capacity += self.__layers[1]  # biases
         capacities.append(capacity)
         print('bit capacity layer %s: %s' % (1, capacity)) if VERBOSE else None
 
@@ -88,13 +90,14 @@ class NN():
             capacity = self.__layers[i-1]*self.__layers[i]  # weights
             capacity += self.__layers[i]  # biases
             capacities.append(min(capacity, self.__layers[i-1]))
-            print('bit capacity layer %s: %s' % (i, capacities[i-1])) if VERBOSE else None
+            print('bit capacity layer %s: %s' %
+                  (i, capacities[i-1])) if VERBOSE else None
 
         return sum(capacities)
 
     # used to train network with given training data
     def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5, epochs=3):
-        
+
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
         score = []
@@ -114,16 +117,18 @@ class NN():
             train_x, train_y, test_x, test_y = data_x[train_ix], data_y[train_ix], data_x[test_ix], data_y[test_ix]
 
             # train the model and record the proces
-            for i in range(0,epochs):
+            for i in range(0, epochs):
 
                 # train the neural network with training data and the split of training data temporarily used as validation data
-                instance = self.__nn.fit(train_x, train_y, epochs=1, batch_size=32, validation_data=(test_x, test_y), verbose=VERBOSE)
+                instance = self.__nn.fit(train_x, train_y, epochs=1, batch_size=32, validation_data=(
+                    test_x, test_y), verbose=VERBOSE)
                 # save metrics of accuracy and loss with the training data
                 train_acc.append(instance.history['accuracy'])
                 train_loss.append(instance.history['loss'])
 
                 # evaluate the neural network after training with the actual test data
-                loss, acc = self.__nn.evaluate(test_data_x, test_data_y, verbose=VERBOSE)
+                loss, acc = self.__nn.evaluate(
+                    test_data_x, test_data_y, verbose=VERBOSE)
                 # save metrics or accuracy and loss for the evaluaton with actual test data
                 test_acc.append(acc)
                 test_loss.append(loss)
@@ -150,13 +155,17 @@ class NN():
             # plot loss
             pyplot.subplot(2, 1, 1)
             pyplot.title('Cross Entropy Loss')
-            pyplot.plot(history[i].history['loss'], color='blue', label='train')
-            pyplot.plot(history[i].history['val_loss'], color='orange', label='test')
+            pyplot.plot(history[i].history['loss'],
+                        color='blue', label='train')
+            pyplot.plot(history[i].history['val_loss'],
+                        color='orange', label='test')
             # plot accuracy
             pyplot.subplot(2, 1, 2)
             pyplot.title('Classification Accuracy')
-            pyplot.plot(history[i].history['accuracy'], color='blue', label='train')
-            pyplot.plot(history[i].history['val_accuracy'], color='orange', label='test')
+            pyplot.plot(history[i].history['accuracy'],
+                        color='blue', label='train')
+            pyplot.plot(history[i].history['val_accuracy'],
+                        color='orange', label='test')
         pyplot.show()
 
         # print summary
@@ -167,16 +176,11 @@ class NN():
 
     # takes a nested list, of a measure and its title, of data from training and displays it in the same plot
     def compare_training(self, measures, type_measure='accuracy', title='Training measure'):
-        
+
         pyplot.title(title)
         for measure in measures:
             pyplot.plot(measure[0], label=measure[1])
         pyplot.legend()
         pyplot.xlabel('Epoc')
-        #pyplot.ylabel('')
+        # pyplot.ylabel('')
         pyplot.show()
-
-################### Main ###################
-
-if __name__ == "__main__":
-    pass

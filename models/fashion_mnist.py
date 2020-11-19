@@ -5,7 +5,6 @@ Implementation of a dense artifical neural network with keras (tensorflow)
 ################### Imports ###################
 
 import keras
-import numpy
 import dense
 
 ################### Global variables ###################
@@ -15,6 +14,8 @@ VERBOSE = True
 ################### Functions ###################
 
 # this function loads the dataset from tensorflow
+
+
 def load_dataset():
 
     (train_x, train_y), (test_x, test_y) = keras.datasets.fashion_mnist.load_data()
@@ -22,6 +23,8 @@ def load_dataset():
     return train_x, train_y, test_x, test_y
 
 # the input data needs to be a float32 between 0 and 1 and the output data needs to be a categorical
+
+
 def format_data(data_x, data_y):
 
     # convert input data to float32 and normalise
@@ -30,7 +33,7 @@ def format_data(data_x, data_y):
 
     # flatten pictures to one dimention
     dim = len(data_x)
-    input_flatt = input_norm.reshape((dim,28*28))
+    input_flatt = input_norm.reshape((dim, 28*28))
 
     # output data is categorised
     output_cat = keras.utils.to_categorical(data_y)
@@ -38,22 +41,24 @@ def format_data(data_x, data_y):
     return input_flatt, output_cat
 
 # main function for using the nn to train on mnist
+
+
 def main():
 
     # import and format data
     train_x, train_y, test_x, test_y = load_dataset()
     train_x, train_y = format_data(train_x, train_y)
-    test_x, test_y = format_data(test_x,test_y)
+    test_x, test_y = format_data(test_x, test_y)
 
     # create model
-    model1 = dense.NN(28*28, 10, 13)
+    model1 = dense.NN(28*28, 10)
     model2 = dense.NN(28*28, 10, 16)
-    model3 = dense.NN(28*28, 10, 22)
+    model3 = dense.NN(28*28, 10, 32)
     models = [[model1], [model2], [model3]]
 
     # list to collect training results
     training_results = list()
-    
+
     # variable initaited to keep track of what model is currently under used
     n = 1
 
@@ -62,7 +67,7 @@ def main():
 
         # bit capacity of model
         capacity = model[0].bit_capacity()
-        print('model', n, ' has a bit capacity of: ',capacity)
+        print('model', n, ' has a bit capacity of: ', capacity)
         model.append(capacity)
 
         # fit model
@@ -73,8 +78,8 @@ def main():
         n += 1
 
     # visualise training
-    model1.compare_training(measures=training_results, title='Training accuracy per epoch of the MNIST fashion data set', type_measure='test accuracy')
-
+    model1.compare_training(measures=training_results,
+                            title='Training accuracy per epoch of the MNIST fashion data set', type_measure='test accuracy')
 
 
 ################### Main ###################
