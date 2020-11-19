@@ -1,6 +1,5 @@
 # Neural-network-project
-Repository containing code from TDT4173 - Machine Learning, final project
-
+Repository containing code for the group project in the course TDT4173 - Machine Learning, Fall 2020. The project works in two parts: It implements a heuristic for determining the size of a neural network from a given dataset. Subsequently, neural networks are created and trained on the respective daatasets.
 
 ## Getting started
 
@@ -20,19 +19,19 @@ Run `pip install virtualenv` to make sure you have this installed.
 
 ## Installing
 
-First we got to create a virtual environment, where we use python 3.8.6.
+Use `git clone` to clone the repo.
 
-Python version needs to be >3.6.0 to get all installments in the right way. 
+Enter the directory with `cd neural-network-project`.
 
-`virtualenv -p python3.8 venv`
+Create a virtual environment, where we use python 3.8.6.
 
-Activate the virtualenv
+Python version needs to be >3.6.0 to get all installments in the right way.
 
-Mac users:
-`source venv/bin/activate`
+Create the virtual environment with python 3.8 using `virtualenv -p python3.8 venv`
 
-Windows users:
-`venv\Scripts\activate`
+Activate the virtualenv for
+- Mac users: `source venv/bin/activate`
+- Windows users: `venv\Scripts\activate`
 
 Install the requirements for the project and migrate the database
 
@@ -56,18 +55,22 @@ Each contains two functions, load and format the data, as well as main function.
    
 ## Connection with report
 
+The three next sections is the same for the different python-files each representing a dataset, found in model.
 ### Data
+The data is loaded at the beginning of the python-file for the different datasets. The function `load_dataset()`uses keras to load the data. With keras installed, this data will be able to load locally.
 
 ### Preprocessing
-
+Preprocessing is the next thing after data is loaded. This happens in the function `format_data(data_x, data_y)`.
 
 ### Neural network initialization
+Three networks of different sizes are initialized using the class NN from `dense.py`.
 
+### Training and evaluation
 
-### Capacity method and results
+Training and evaluation is done in the function `train()` in `dense.py`. The result is accuracy on the test dataset, shown in section 5.3 in the report. Note: Need to run each dataset independently. 
 
-![Output from capacity estimator](https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png)
+### Capacity method
 
-### Results
+The method can be found in `utils/capacity_req.py`. It loads all three datasets and iterates through all in order to find the data we need. The result is shown below, and is the same as can be found in the report in section 5.1.
 
-
+![Output from capacity estimator](https://github.com/ProBlxst-Learning/neural-network-project/blob/main/img/capacity_req_output.png =200x)
