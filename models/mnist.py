@@ -73,7 +73,7 @@ def main():
         model.append(capacity)
 
         # fit model
-        results = model[0].train(train_x, train_y, test_x, test_y, epochs=1)
+        results = model[0].train(train_x, train_y, test_x, test_y, epochs=5)
         # appends the test accuracy and the number of the model to the training results
         result_model = [results[2], 'bit capacity: ' + str(model[1])]
         training_results.append(result_model)

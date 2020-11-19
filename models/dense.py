@@ -96,7 +96,7 @@ class NN():
         return sum(capacities)
 
     # used to train network with given training data
-    def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5, epochs=3):
+    def train(self, data_x, data_y, test_data_x, test_data_y, n_folds=5, epochs=5):
 
         # we wish to se the progress the model went through in the training, both in traing performed and the accuracy it achieved
         history = []
